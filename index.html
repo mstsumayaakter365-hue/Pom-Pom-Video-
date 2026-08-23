@@ -3,13 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral Content Mini App</title>
+  <title>Viral Link Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f5f7; padding: 15px; color: #1e293b; }
-    h2 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #0f172a; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f8fafc; padding-bottom: 80px; color: #1e293b; }
+
+    /* Top Header Bar */
+    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid #f1f5f9; }
+    .balance-badge { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; }
+    .wallet-icon { width: 28px; height: 28px; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; }
+    .balance-info { font-size: 11px; color: #64748b; font-weight: 600; }
+    .balance-amount { font-size: 14px; font-weight: 800; color: #0f172a; }
     
-    .card { display: flex; align-items: center; gap: 12px; background: #ffffff; padding: 12px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 14px; }
+    .user-profile { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 12px 4px 4px; border-radius: 20px; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+    .user-name { font-size: 13px; font-weight: 700; color: #0f172a; }
+
+    /* Main Container */
+    .container { padding: 15px; }
+
+    /* Tabs Layout */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Home UI (Post Cards) */
+    .card { display: flex; align-items: center; gap: 12px; background: #ffffff; padding: 12px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 14px; }
     .card img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #e2e8f0; }
     .card-details { flex-grow: 1; min-width: 0; }
     .card-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
@@ -17,44 +36,171 @@
     .task-btn { background: #0f172a; color: #ffffff; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 6px; }
     .task-btn.waiting { background: #eab308; color: #000; cursor: wait; }
     .task-btn.unlocked { background: #22c55e; color: #fff; }
+
+    /* Earn Money UI */
+    .earn-header { text-align: center; margin-bottom: 20px; }
+    .earn-header h2 { font-size: 24px; font-weight: 800; color: #0f172a; }
+    .earn-header p { color: #64748b; font-size: 13px; margin-top: 4px; }
+    .limit-badge { display: inline-block; background: #f3e8ff; color: #a855f7; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-top: 10px; }
+
+    .section-head { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; border-left: 4px solid #3b82f6; padding-left: 8px; }
+    .section-head h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .tag-badge { background: #dbeafe; color: #2563eb; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+
+    .partner-box { background: #fff; padding: 20px; text-align: center; color: #94a3b8; font-size: 13px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+
+    /* Video Ad Card */
+    .video-ad-card { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-radius: 18px; padding: 25px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-top: 15px; border: 1px solid #e2e8f0; }
+    .play-icon-circle { width: 65px; height: 65px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4); }
+    .play-icon-circle::after { content: ''; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid #fff; margin-left: 4px; }
+
+    .video-ad-card h3 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .video-ad-card p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+    .video-ad-card p b { color: #16a34a; }
+
+    .start-watch-btn { background: #0b1329; color: #fff; border: none; padding: 14px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .start-watch-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #1e1b4b; display: flex; justify-content: space-around; align-items: center; border-top-left-radius: 18px; border-top-right-radius: 18px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); }
+    .nav-item { color: #a5b4fc; font-size: 11px; text-align: center; cursor: pointer; border: none; background: none; flex: 1; }
+    .nav-item.active { color: #818cf8; font-weight: bold; }
+
+    /* Forms & Other UI */
+    input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+    .action-btn { background: #22c55e; color: #fff; font-weight: bold; padding: 12px; width: 100%; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .info-box { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
   </style>
 </head>
 <body>
 
-  <h2>Trending Links</h2>
+  <!-- Top Header Bar -->
+  <div class="top-header">
+    <div class="balance-badge">
+      <div class="wallet-icon">👛</div>
+      <div>
+        <div class="balance-info">MY BALANCE</div>
+        <div class="balance-amount">৳<span id="user-top-balance">0.00</span></div>
+      </div>
+    </div>
+    <div class="user-profile">
+      <img src="https://via.placeholder.com/30" class="user-avatar" id="user-avatar-img" alt="User">
+      <span class="user-name" id="user-display-name">User</span>
+    </div>
+  </div>
 
-  <div id="posts-container"></div>
+  <div class="container">
+    <!-- ================= 1. HOME TAB (আপনার ৩টি পোস্ট) ================= -->
+    <div id="home" class="tab-content active">
+      <h2 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">New Viral <span style="color:#a855f7;">Link</span></h2>
+      <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Watch ads to unlock premium content.</p>
+      
+      <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Trending Links</h3>
+      <div id="posts-container"></div>
+    </div>
+
+    <!-- ================= 2. EARN TAB ================= -->
+    <div id="earn" class="tab-content">
+      <div class="earn-header">
+        <h2>Earn Money</h2>
+        <p>Watch ads & complete tasks</p>
+        <div class="limit-badge">⏰ Daily Video Limit: <span id="ad-limit-count">0</span>/50</div>
+      </div>
+
+      <div class="section-head">
+        <h3>Partner Tasks</h3>
+        <span class="tag-badge">Adsgram</span>
+      </div>
+      <div class="partner-box">No tasks available now.</div>
+
+      <div class="video-ad-card">
+        <div class="play-icon-circle"></div>
+        <h3>Watch 2-Step Video Ad</h3>
+        <p>Get <b>৳20.00</b> per full completion.</p>
+        
+        <button class="start-watch-btn" id="start-ad-btn" onclick="handleAdWatch()">
+          📹 <span id="ad-btn-text">Start Watching</span>
+        </button>
+      </div>
+
+      <div class="section-head" style="margin-top: 25px; border-left-color: #a855f7;">
+        <h3>Verification Tasks</h3>
+        <span class="tag-badge" style="background: #f3e8ff; color: #a855f7;">High Paying</span>
+      </div>
+    </div>
+
+    <!-- ================= 3. REFER TAB ================= -->
+    <div id="refer" class="tab-content">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 15px;">Invite Friends</h2>
+      <div class="info-box">
+        <p style="margin-bottom: 8px; font-weight: 600;">Referral Reward:</p>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Earn ৳20 for every friend who joins using your link.</p>
+        <input type="text" value="https://t.me/your_bot_username?start=123" readonly id="refLink">
+        <button class="action-btn" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); alert('Referral Link Copied!')">Copy Link</button>
+      </div>
+    </div>
+
+    <!-- ================= 4. PROFILE TAB ================= -->
+    <div id="profile" class="tab-content">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 15px;">Profile & Withdraw</h2>
+      <div class="info-box">
+        <p>My Balance: <b style="color: #16a34a; font-size: 18px;">৳<span id="user-profile-balance">0.00</span></b></p>
+      </div>
+      <div class="info-box">
+        <h3 style="font-size: 15px; margin-bottom: 10px;">Withdraw Funds</h3>
+        <select>
+          <option>bKash</option>
+          <option>Nagad</option>
+        </select>
+        <input type="text" placeholder="Enter Wallet/Phone Number">
+        <input type="number" placeholder="Enter Amount">
+        <button class="action-btn" style="background: #0f172a; margin-top: 10px;">Submit Withdraw Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('home', this)">🏠<br>Home</button>
+    <button class="nav-item" onclick="switchTab('earn', this)">💰<br>Earn & Task</button>
+    <button class="nav-item" onclick="switchTab('refer', this)">👥<br>Refer</button>
+    <button class="nav-item" onclick="switchTab('profile', this)">👤<br>Profile</button>
+  </div>
 
   <script>
-    // ১. আপনার প্রদানকৃত ৩টি পোস্টের ডাটা
+    const adsterraLink = "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093";
+
+    // আপনার ৩টি পোস্টের তথ্য
     const postsData = [
       {
         id: 1,
         title: "পিচ্চি মেয়ের ১২ মিনিট ভাইরাল লিংক।🥵",
         image: "https://i.ibb.co/b5pWhFbt/image.jpg",
-        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        adLink: adsterraLink,
         contentLink: "https://qu.ax/0n5wG"
       },
       {
         id: 2,
         title: "Doggy style খেয়ে দিল Boyfriend 🥵🔥",
         image: "https://i.ibb.co/kVNbJStk/image.jpg",
-        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        adLink: adsterraLink,
         contentLink: "https://qu.ax/PerPh"
       },
       {
         id: 3,
         title: "বৌদির গুদে মা*ল ঢেলে দিল দেবর 🥵🎀",
         image: "https://i.ibb.co/qXXQGvP/image.jpg",
-        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        adLink: adsterraLink,
         contentLink: "https://qu.ax/mSTKm"
       }
     ];
 
     let taskProgress = {};
     let isTimerRunning = {};
+    let adStep = 0;
+    let completedAdsToday = 0;
 
-    // ২. ইন্টারফেস রেন্ডার করা
+    // Home Posts Render
     function renderPosts() {
       const container = document.getElementById('posts-container');
       container.innerHTML = '';
@@ -77,9 +223,9 @@
       });
     }
 
-    // ৩. টাস্ক, টাইমার এবং রিডাইরেক্ট লজিক
+    // Home Task Ads Handling
     function handleTask(postId) {
-      if (isTimerRunning[postId]) return; // টাইমার চলাকালীন ক্লিক ব্লক থাকবে
+      if (isTimerRunning[postId]) return;
 
       let currentTask = taskProgress[postId];
       const post = postsData.find(p => p.id === postId);
@@ -88,13 +234,12 @@
       const countText = document.getElementById(`count-${postId}`);
 
       if (currentTask < 2) {
-        // নতুন ট্যাবে Adsterra অ্যাড ওপেন হবে
         window.open(post.adLink, '_blank');
         
         isTimerRunning[postId] = true;
         btn.classList.add("waiting");
         
-        let timeLeft = 30; // ৩০ সেকেন্ডের টাইমার
+        let timeLeft = 30;
         btnText.innerText = `Wait ${timeLeft}s...`;
 
         const timer = setInterval(() => {
@@ -110,7 +255,6 @@
             countText.innerText = taskProgress[postId];
 
             if (taskProgress[postId] === 2) {
-              // ২টি টাস্ক শেষ হলে অটো রিডাইরেক্ট
               btnText.innerText = "Unlocking...";
               btn.classList.add("unlocked");
               
@@ -123,8 +267,69 @@
           }
         }, 1000);
       } else {
-        // আগেই আনলক হয়ে থাকলে সরাসরি রিডাইরেক্ট করবে
         window.location.href = post.contentLink;
+      }
+    }
+
+    // Earn Tab: Watch 2-Step Ad Logic
+    function handleAdWatch() {
+      const btn = document.getElementById('start-ad-btn');
+      const btnText = document.getElementById('ad-btn-text');
+
+      if (adStep < 2) {
+        window.open(adsterraLink, '_blank');
+        btn.disabled = true;
+
+        let timeLeft = 30;
+        btnText.innerText = `Watching Step ${adStep + 1}/2 (${timeLeft}s)...`;
+
+        const timer = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+            btnText.innerText = `Watching Step ${adStep + 1}/2 (${timeLeft}s)...`;
+          } else {
+            clearInterval(timer);
+            btn.disabled = false;
+            adStep++;
+
+            if (adStep === 1) {
+              btnText.innerText = "Click to Watch Step 2";
+            } else if (adStep === 2) {
+              btnText.innerText = "Task Completed! ✔";
+              completedAdsToday++;
+              document.getElementById('ad-limit-count').innerText = completedAdsToday;
+              alert('You have completed the 2-step ad task!');
+              
+              setTimeout(() => {
+                adStep = 0;
+                btnText.innerText = "Start Watching";
+              }, 3000);
+            }
+          }
+        }, 1000);
+      }
+    }
+
+    // Bottom Navigation Switcher
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      element.classList.add('active');
+    }
+
+    // Telegram User Info Setup
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+
+      const user = window.Telegram.WebApp.initDataUnsafe?.user;
+      if (user) {
+        document.getElementById('user-display-name').innerText = user.first_name || "User";
+        if (user.photo_url) {
+          document.getElementById('user-avatar-img').src = user.photo_url;
+        }
       }
     }
 
