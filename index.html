@@ -3,324 +3,530 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral Link Mini App</title>
+  <title>Pom Pom Video App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #f8fafc; padding-bottom: 80px; color: #1e293b; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    /* Top Header Bar */
-    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid #f1f5f9; }
-    .balance-badge { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; }
-    .wallet-icon { width: 28px; height: 28px; background: #8b5cf6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; }
-    .balance-info { font-size: 11px; color: #64748b; font-weight: 600; }
-    .balance-amount { font-size: 14px; font-weight: 800; color: #0f172a; }
-    
-    .user-profile { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 12px 4px 4px; border-radius: 20px; }
-    .user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
-    .user-name { font-size: 13px; font-weight: 700; color: #0f172a; }
+    body {
+      background-color: #f8fafc;
+      color: #1e293b;
+      padding-bottom: 80px;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .balance-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .balance-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .balance-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .balance-label {
+      font-size: 9px;
+      color: #64748b;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .balance-amount {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px 12px 4px 4px;
+      border-radius: 20px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #cbd5e1;
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: #0f172a;
+    }
 
     /* Main Container */
-    .container { padding: 15px; }
+    .container {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
 
-    /* Tabs Layout */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
 
-    /* Home UI (Post Cards) */
-    .card { display: flex; align-items: center; gap: 12px; background: #ffffff; padding: 12px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 14px; }
-    .card img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #e2e8f0; }
-    .card-details { flex-grow: 1; min-width: 0; }
-    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    
-    .task-btn { background: #0f172a; color: #ffffff; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 6px; }
-    .task-btn.waiting { background: #eab308; color: #000; cursor: wait; }
-    .task-btn.unlocked { background: #22c55e; color: #fff; }
+    .section-title span {
+      color: #a855f7;
+    }
 
-    /* Earn Money UI */
-    .earn-header { text-align: center; margin-bottom: 20px; }
-    .earn-header h2 { font-size: 24px; font-weight: 800; color: #0f172a; }
-    .earn-header p { color: #64748b; font-size: 13px; margin-top: 4px; }
-    .limit-badge { display: inline-block; background: #f3e8ff; color: #a855f7; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-top: 10px; }
+    .section-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
 
-    .section-head { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 10px 0; border-left: 4px solid #3b82f6; padding-left: 8px; }
-    .section-head h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
-    .tag-badge { background: #dbeafe; color: #2563eb; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+    /* Cards & Post List */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #f1f5f9;
+    }
 
-    .partner-box { background: #fff; padding: 20px; text-align: center; color: #94a3b8; font-size: 13px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
 
-    /* Video Ad Card */
-    .video-ad-card { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-radius: 18px; padding: 25px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.04); margin-top: 15px; border: 1px solid #e2e8f0; }
-    .play-icon-circle { width: 65px; height: 65px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4); }
-    .play-icon-circle::after { content: ''; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid #fff; margin-left: 4px; }
+    .share-btn {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #0f172a;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
 
-    .video-ad-card h3 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-    .video-ad-card p { font-size: 13px; color: #64748b; margin-bottom: 20px; }
-    .video-ad-card p b { color: #16a34a; }
+    .share-btn:active {
+      background: #e2e8f0;
+    }
 
-    .start-watch-btn { background: #0b1329; color: #fff; border: none; padding: 14px; border-radius: 12px; width: 100%; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .start-watch-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .action-btn {
+      width: 100%;
+      background: #0b1329;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
 
-    /* Bottom Navigation Bar */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: #1e1b4b; display: flex; justify-content: space-around; align-items: center; border-top-left-radius: 18px; border-top-right-radius: 18px; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); }
-    .nav-item { color: #a5b4fc; font-size: 11px; text-align: center; cursor: pointer; border: none; background: none; flex: 1; }
-    .nav-item.active { color: #818cf8; font-weight: bold; }
+    .action-btn:active {
+      opacity: 0.9;
+    }
 
-    /* Forms & Other UI */
-    input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
-    .action-btn { background: #22c55e; color: #fff; font-weight: bold; padding: 12px; width: 100%; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
-    .info-box { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0b1329;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      font-size: 11px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: #a855f7;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Input & Forms */
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-left: 4px solid #6366f1;
+      padding-left: 8px;
+    }
+
+    .tag-badge {
+      background: #e0e7ff;
+      color: #4338ca;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Header Bar -->
-  <div class="top-header">
+  <!-- Top Bar -->
+  <div class="top-bar">
     <div class="balance-badge">
-      <div class="wallet-icon">👛</div>
-      <div>
-        <div class="balance-info">MY BALANCE</div>
-        <div class="balance-amount">৳<span id="user-top-balance">0.00</span></div>
+      <div class="balance-icon">৳</div>
+      <div class="balance-info">
+        <span class="balance-label">MY BALANCE</span>
+        <span class="balance-amount">৳<span id="user-balance">0.00</span></span>
       </div>
     </div>
     <div class="user-profile">
-      <img src="https://via.placeholder.com/30" class="user-avatar" id="user-avatar-img" alt="User">
-      <span class="user-name" id="user-display-name">User</span>
+      <img id="user-avatar-img" class="user-avatar" src="https://via.placeholder.com/28" alt="User">
+      <span id="user-display-name" class="user-name">User</span>
     </div>
   </div>
 
   <div class="container">
-    <!-- ================= 1. HOME TAB (আপনার ৩টি পোস্ট) ================= -->
-    <div id="home" class="tab-content active">
-      <h2 style="font-size: 20px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">New Viral <span style="color:#a855f7;">Link</span></h2>
-      <p style="color: #64748b; font-size: 12px; margin-bottom: 15px;">Watch ads to unlock premium content.</p>
+    
+    <!-- 1. HOME TAB -->
+    <div id="home-tab" class="tab-content active">
+      <h2 class="section-title">New Viral <span>Link</span></h2>
+      <p class="section-subtitle">Watch ads to unlock premium content.</p>
       
-      <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Trending Links</h3>
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #0f172a;">Trending Links</h3>
       <div id="posts-container"></div>
     </div>
 
-    <!-- ================= 2. EARN TAB ================= -->
-    <div id="earn" class="tab-content">
-      <div class="earn-header">
-        <h2>Earn Money</h2>
-        <p>Watch ads & complete tasks</p>
-        <div class="limit-badge">⏰ Daily Video Limit: <span id="ad-limit-count">0</span>/50</div>
-      </div>
+    <!-- 2. EARN & TASK TAB -->
+    <div id="earn-tab" class="tab-content">
+      <h2 class="section-title">Earn & <span>Tasks</span></h2>
+      <p class="section-subtitle">Complete daily tasks to earn extra money.</p>
 
       <div class="section-head">
-        <h3>Partner Tasks</h3>
-        <span class="tag-badge">Adsgram</span>
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">Video Tasks</h3>
+        <span class="tag-badge">Adsterra</span>
       </div>
-      <div class="partner-box">No tasks available now.</div>
 
-      <div class="video-ad-card">
-        <div class="play-icon-circle"></div>
-        <h3>Watch 2-Step Video Ad</h3>
-        <p>Get <b>৳20.00</b> per full completion.</p>
-        
-        <button class="start-watch-btn" id="start-ad-btn" onclick="handleAdWatch()">
-          📹 <span id="ad-btn-text">Start Watching</span>
-        </button>
+      <div class="card" style="display: flex; gap: 12px; align-items: center;">
+        <div style="width: 44px; height: 44px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 20px; flex-shrink: 0;">▶</div>
+        <div style="flex: 1;">
+          <h3 style="font-size: 14px; font-weight: 800; color: #0f172a;">2 Step Video Ad</h3>
+          <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Earn <b>৳2.00</b> per full completion.</p>
+        </div>
       </div>
+      <button class="action-btn" id="start-ad-btn" onclick="handleAdWatch()" style="margin-bottom: 25px; background: #22c55e;">
+        <span id="ad-btn-text">Start Watching</span>
+      </button>
 
       <div class="section-head" style="margin-top: 25px; border-left-color: #a855f7;">
-        <h3>Verification Tasks</h3>
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">Mission Tasks</h3>
         <span class="tag-badge" style="background: #f3e8ff; color: #a855f7;">High Paying</span>
       </div>
+      <div class="card" style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
+        No extra tasks available right now.
+      </div>
     </div>
 
-    <!-- ================= 3. REFER TAB ================= -->
-    <div id="refer" class="tab-content">
-      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 15px;">Invite Friends</h2>
-      <div class="info-box">
-        <p style="margin-bottom: 8px; font-weight: 600;">Referral Reward:</p>
+    <!-- 3. REFER TAB -->
+    <div id="refer-tab" class="tab-content">
+      <h2 class="section-title">Invite <span>Friends</span></h2>
+      <p class="section-subtitle">Earn rewards by inviting your friends.</p>
+
+      <div class="card" style="padding: 16px;">
+        <p style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #0f172a;">Referral Reward:</p>
         <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Earn ৳20 for every friend who joins using your link.</p>
-        <input type="text" value="https://t.me/pompoms_bot" readonly id="refLink">
-
-        <button class="action-btn" onclick="navigator.clipboard.writeText(document.getElementById('refLink').value); alert('Referral Link Copied!')">Copy Link</button>
+        
+        <input type="text" class="input-field" value="https://t.me/pompoms_bot" readonly id="refLink">
+        <button class="action-btn" onclick="copyRefLink()" style="background: #00c853;">Copy Link</button>
       </div>
     </div>
 
-    <!-- ================= 4. PROFILE TAB ================= -->
-    <div id="profile" class="tab-content">
-      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 15px;">Profile & Withdraw</h2>
-      <div class="info-box">
-        <p>My Balance: <b style="color: #16a34a; font-size: 18px;">৳<span id="user-profile-balance">0.00</span></b></p>
+    <!-- 4. PROFILE TAB -->
+    <div id="profile-tab" class="tab-content">
+      <h2 class="section-title">Profile & <span>Withdraw</span></h2>
+      <p class="section-subtitle">Manage your earnings and withdraw funds.</p>
+
+      <div class="card" style="padding: 16px; margin-bottom: 20px;">
+        <p style="font-size: 13px; color: #64748b;">Current Balance</p>
+        <h3 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 4px;">৳<span id="profile-balance">0.00</span></h3>
       </div>
-      <div class="info-box">
-        <h3 style="font-size: 15px; margin-bottom: 10px;">Withdraw Funds</h3>
-        <select>
+
+      <div class="card" style="padding: 16px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px;">Withdraw Funds</h3>
+        
+        <select class="input-field">
           <option>bKash</option>
           <option>Nagad</option>
+          <option>Rocket</option>
         </select>
-        <input type="text" placeholder="Enter Wallet/Phone Number">
-        <input type="number" placeholder="Enter Amount">
-        <button class="action-btn" style="background: #0f172a; margin-top: 10px;">Submit Withdraw Request</button>
+        
+        <input type="text" class="input-field" placeholder="Enter Wallet / Phone Number">
+        <input type="number" class="input-field" placeholder="Enter Amount (Min ৳100)">
+        
+        <button class="action-btn" onclick="alert('Withdrawal request submitted successfully!')">Withdraw</button>
       </div>
     </div>
+
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('home', this)">🏠<br>Home</button>
-    <button class="nav-item" onclick="switchTab('earn', this)">💰<br>Earn & Task</button>
-    <button class="nav-item" onclick="switchTab('refer', this)">👥<br>Refer</button>
-    <button class="nav-item" onclick="switchTab('profile', this)">👤<br>Profile</button>
+    <div class="nav-item active" onclick="switchTab('home-tab', this)">
+      <div class="nav-icon">🏠</div>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('earn-tab', this)">
+      <div class="nav-icon">💰</div>
+      <span>Earn & Task</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('refer-tab', this)">
+      <div class="nav-icon">👥</div>
+      <span>Refer</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('profile-tab', this)">
+      <div class="nav-icon">👤</div>
+      <span>Profile</span>
+    </div>
   </div>
 
   <script>
+    // Adsterra Direct Link
     const adsterraLink = "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093";
+    const botUsername = "pompoms_bot";
 
-    // আপনার ৩টি পোস্টের তথ্য
+    // Posts Data
     const postsData = [
       {
         id: 1,
         title: "পিচ্চি মেয়ের ১২ মিনিট ভাইরাল লিংক।🥵",
         image: "https://i.ibb.co/b5pWhFbt/image.jpg",
-        adLink: adsterraLink,
         contentLink: "https://qu.ax/0n5wG"
       },
       {
         id: 2,
         title: "Doggy style খেয়ে দিল Boyfriend 🥵🔥",
         image: "https://i.ibb.co/kVNbJStk/image.jpg",
-        adLink: adsterraLink,
         contentLink: "https://qu.ax/PerPh"
       },
       {
         id: 3,
         title: "বৌদির গুদে মা*ল ঢেলে দিল দেবর 🥵🎀",
         image: "https://i.ibb.co/qXXQGvP/image.jpg",
-        adLink: adsterraLink,
         contentLink: "https://qu.ax/mSTKm"
       }
     ];
 
-    let taskProgress = {};
-    let isTimerRunning = {};
-    let adStep = 0;
-    let completedAdsToday = 0;
+    let userProgress = {};
+    let currentAdStep = 1;
+    let isAdTimerRunning = false;
 
-    // Home Posts Render
+    // Render Home Posts with Share Button
     function renderPosts() {
       const container = document.getElementById('posts-container');
-      container.innerHTML = '';
+      if (!container) return;
 
-      postsData.forEach(post => {
-        taskProgress[post.id] = 0;
-        isTimerRunning[post.id] = false;
-
-        container.innerHTML += `
+      container.innerHTML = postsData.map(post => {
+        const step = userProgress[post.id] || 0;
+        return `
           <div class="card">
-            <img src="${post.image}" alt="Thumb" onerror="this.src='https://via.placeholder.com/85'">
-            <div class="card-details">
-              <div class="card-title">${post.title}</div>
-              <button class="task-btn" id="btn-${post.id}" onclick="handleTask(${post.id})">
-                <span id="btn-text-${post.id}">Unlock Content</span> (<span id="count-${post.id}">0</span>/2)
-              </button>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <img src="${post.image}" style="width: 85px; height: 85px; border-radius: 12px; object-fit: cover; flex-shrink: 0;">
+              <div style="flex: 1;">
+                <div class="post-header">
+                  <h4 style="font-size: 13.5px; font-weight: 700; color: #0f172a; line-height: 1.3;">
+                    ${post.title}
+                  </h4>
+                  <!-- Share Icon -->
+                  <button class="share-btn" onclick="sharePost(${post.id}, '${post.title.replace(/'/g, "\\'")}')" title="Share Post">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                  </button>
+                </div>
+                <button class="action-btn" onclick="handleUnlock(${post.id})" style="margin-top: 4px;">
+                  Unlock Content ( ${step} / 2 )
+                </button>
+              </div>
             </div>
           </div>
         `;
-      });
+      }).join('');
     }
 
-    // Home Task Ads Handling
-    function handleTask(postId) {
-      if (isTimerRunning[postId]) return;
+    // Share Post to Telegram Chat
+    function sharePost(postId, title) {
+      const shareUrl = `https://t.me/${botUsername}?start=post_${postId}`;
+      const shareText = encodeURIComponent(`${title}\n\n🎬 ভিডিওটি দেখতে নিচের লিংকে ক্লিক করুন:`);
+      const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${shareText}`;
 
-      let currentTask = taskProgress[postId];
-      const post = postsData.find(p => p.id === postId);
-      const btn = document.getElementById(`btn-${postId}`);
-      const btnText = document.getElementById(`btn-text-${postId}`);
-      const countText = document.getElementById(`count-${postId}`);
-
-      if (currentTask < 2) {
-        window.open(post.adLink, '_blank');
-        
-        isTimerRunning[postId] = true;
-        btn.classList.add("waiting");
-        
-        let timeLeft = 30;
-        btnText.innerText = `Wait ${timeLeft}s...`;
-
-        const timer = setInterval(() => {
-          timeLeft--;
-          if (timeLeft > 0) {
-            btnText.innerText = `Wait ${timeLeft}s...`;
-          } else {
-            clearInterval(timer);
-            isTimerRunning[postId] = false;
-            btn.classList.remove("waiting");
-            
-            taskProgress[postId]++;
-            countText.innerText = taskProgress[postId];
-
-            if (taskProgress[postId] === 2) {
-              btnText.innerText = "Unlocking...";
-              btn.classList.add("unlocked");
-              
-              setTimeout(() => {
-                window.location.href = post.contentLink;
-              }, 1000);
-            } else {
-              btnText.innerText = "Unlock Content";
-            }
-          }
-        }, 1000);
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(tgShareUrl);
       } else {
-        window.location.href = post.contentLink;
+        window.open(tgShareUrl, '_blank');
       }
     }
 
-    // Earn Tab: Watch 2-Step Ad Logic
+    // Handle Content Unlock Steps
+    function handleUnlock(postId) {
+      const post = postsData.find(p => p.id === postId);
+      if (!post) return;
+
+      let currentStep = userProgress[postId] || 0;
+
+      if (currentStep === 0) {
+        window.open(adsterraLink, '_blank');
+        userProgress[postId] = 1;
+        renderPosts();
+      } else if (currentStep === 1) {
+        window.open(adsterraLink, '_blank');
+        userProgress[postId] = 2;
+        renderPosts();
+      } else {
+        window.open(post.contentLink, '_blank');
+      }
+    }
+
+    // Task Tab Ad Watching System
     function handleAdWatch() {
+      if (isAdTimerRunning) return;
+
       const btn = document.getElementById('start-ad-btn');
       const btnText = document.getElementById('ad-btn-text');
 
-      if (adStep < 2) {
-        window.open(adsterraLink, '_blank');
-        btn.disabled = true;
+      window.open(adsterraLink, '_blank');
+      isAdTimerRunning = true;
 
-        let timeLeft = 30;
-        btnText.innerText = `Watching Step ${adStep + 1}/2 (${timeLeft}s)...`;
+      let timeLeft = 30;
+      btn.style.background = "#94a3b8";
 
-        const timer = setInterval(() => {
-          timeLeft--;
-          if (timeLeft > 0) {
-            btnText.innerText = `Watching Step ${adStep + 1}/2 (${timeLeft}s)...`;
+      const timer = setInterval(() => {
+        timeLeft--;
+        btnText.innerText = `Please wait ${timeLeft}s...`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          isAdTimerRunning = false;
+
+          if (currentAdStep === 1) {
+            currentAdStep = 2;
+            btnText.innerText = "Watch Step 2";
+            btn.style.background = "#3b82f6";
           } else {
-            clearInterval(timer);
-            btn.disabled = false;
-            adStep++;
+            currentAdStep = 1;
+            btnText.innerText = "Task Completed! (+৳2.00)";
+            btn.style.background = "#22c55e";
 
-            if (adStep === 1) {
-              btnText.innerText = "Click to Watch Step 2";
-            } else if (adStep === 2) {
-              btnText.innerText = "Task Completed! ✔";
-              completedAdsToday++;
-              document.getElementById('ad-limit-count').innerText = completedAdsToday;
-              alert('You have completed the 2-step ad task!');
-              
-              setTimeout(() => {
-                adStep = 0;
-                btnText.innerText = "Start Watching";
-              }, 3000);
-            }
+            let currentBal = parseFloat(document.getElementById('user-balance').innerText);
+            let newBal = (currentBal + 2.00).toFixed(2);
+            document.getElementById('user-balance').innerText = newBal;
+            document.getElementById('profile-balance').innerText = newBal;
+
+            setTimeout(() => {
+              btnText.innerText = "Start Watching";
+            }, 3000);
           }
-        }, 1000);
-      }
+        }
+      }, 1000);
     }
 
-    // Bottom Navigation Switcher
+    // Copy Referral Link
+    function copyRefLink() {
+      const copyText = document.getElementById("refLink");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+      alert("Referral link copied to clipboard!");
+    }
+
+    // Switch Tabs
     function switchTab(tabId, element) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-      
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
       document.getElementById(tabId).classList.add('active');
       element.classList.add('active');
     }
 
-    // Telegram User Info Setup
+    // Telegram User Info Integration
     if (window.Telegram && window.Telegram.WebApp) {
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
@@ -331,9 +537,13 @@
         if (user.photo_url) {
           document.getElementById('user-avatar-img').src = user.photo_url;
         }
+
+        const refLink = `https://t.me/${botUsername}?start=${user.id}`;
+        document.getElementById('refLink').value = refLink;
       }
     }
 
+    // Initial Render
     renderPosts();
   </script>
 </body>
