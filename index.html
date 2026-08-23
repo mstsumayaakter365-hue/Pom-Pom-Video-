@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viral Content Mini App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f5f7; padding: 15px; color: #1e293b; }
+    h2 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: #0f172a; }
+    
+    .card { display: flex; align-items: center; gap: 12px; background: #ffffff; padding: 12px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 14px; }
+    .card img { width: 85px; height: 85px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #e2e8f0; }
+    .card-details { flex-grow: 1; min-width: 0; }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    
+    .task-btn { background: #0f172a; color: #ffffff; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s ease; display: flex; justify-content: center; align-items: center; gap: 6px; }
+    .task-btn.waiting { background: #eab308; color: #000; cursor: wait; }
+    .task-btn.unlocked { background: #22c55e; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <h2>Trending Links</h2>
+
+  <div id="posts-container"></div>
+
+  <script>
+    // ১. আপনার প্রদানকৃত ৩টি পোস্টের ডাটা
+    const postsData = [
+      {
+        id: 1,
+        title: "পিচ্চি মেয়ের ১২ মিনিট ভাইরাল লিংক।🥵",
+        image: "https://i.ibb.co/b5pWhFbt/image.jpg",
+        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        contentLink: "https://qu.ax/0n5wG"
+      },
+      {
+        id: 2,
+        title: "Doggy style খেয়ে দিল Boyfriend 🥵🔥",
+        image: "https://i.ibb.co/kVNbJStk/image.jpg",
+        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        contentLink: "https://qu.ax/PerPh"
+      },
+      {
+        id: 3,
+        title: "বৌদির গুদে মা*ল ঢেলে দিল দেবর 🥵🎀",
+        image: "https://i.ibb.co/qXXQGvP/image.jpg",
+        adLink: "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093",
+        contentLink: "https://qu.ax/mSTKm"
+      }
+    ];
+
+    let taskProgress = {};
+    let isTimerRunning = {};
+
+    // ২. ইন্টারফেস রেন্ডার করা
+    function renderPosts() {
+      const container = document.getElementById('posts-container');
+      container.innerHTML = '';
+
+      postsData.forEach(post => {
+        taskProgress[post.id] = 0;
+        isTimerRunning[post.id] = false;
+
+        container.innerHTML += `
+          <div class="card">
+            <img src="${post.image}" alt="Thumb" onerror="this.src='https://via.placeholder.com/85'">
+            <div class="card-details">
+              <div class="card-title">${post.title}</div>
+              <button class="task-btn" id="btn-${post.id}" onclick="handleTask(${post.id})">
+                <span id="btn-text-${post.id}">Unlock Content</span> (<span id="count-${post.id}">0</span>/2)
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // ৩. টাস্ক, টাইমার এবং রিডাইরেক্ট লজিক
+    function handleTask(postId) {
+      if (isTimerRunning[postId]) return; // টাইমার চলাকালীন ক্লিক ব্লক থাকবে
+
+      let currentTask = taskProgress[postId];
+      const post = postsData.find(p => p.id === postId);
+      const btn = document.getElementById(`btn-${postId}`);
+      const btnText = document.getElementById(`btn-text-${postId}`);
+      const countText = document.getElementById(`count-${postId}`);
+
+      if (currentTask < 2) {
+        // নতুন ট্যাবে Adsterra অ্যাড ওপেন হবে
+        window.open(post.adLink, '_blank');
+        
+        isTimerRunning[postId] = true;
+        btn.classList.add("waiting");
+        
+        let timeLeft = 30; // ৩০ সেকেন্ডের টাইমার
+        btnText.innerText = `Wait ${timeLeft}s...`;
+
+        const timer = setInterval(() => {
+          timeLeft--;
+          if (timeLeft > 0) {
+            btnText.innerText = `Wait ${timeLeft}s...`;
+          } else {
+            clearInterval(timer);
+            isTimerRunning[postId] = false;
+            btn.classList.remove("waiting");
+            
+            taskProgress[postId]++;
+            countText.innerText = taskProgress[postId];
+
+            if (taskProgress[postId] === 2) {
+              // ২টি টাস্ক শেষ হলে অটো রিডাইরেক্ট
+              btnText.innerText = "Unlocking...";
+              btn.classList.add("unlocked");
+              
+              setTimeout(() => {
+                window.location.href = post.contentLink;
+              }, 1000);
+            } else {
+              btnText.innerText = "Unlock Content";
+            }
+          }
+        }, 1000);
+      } else {
+        // আগেই আনলক হয়ে থাকলে সরাসরি রিডাইরেক্ট করবে
+        window.location.href = post.contentLink;
+      }
+    }
+
+    renderPosts();
+  </script>
+</body>
+</html>
