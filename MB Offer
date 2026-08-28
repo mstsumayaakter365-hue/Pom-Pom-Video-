@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My GP - BL Offer</title>
+    <style>
+        /* CSS Reset */
+        * {
+            box-sizing: border-box !important;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        body {
+            /* Background image sample with overlay */
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 15px 10px;
+            overflow-x: hidden;
+        }
+
+        /* Top Header Banner Text */
+        .top-banner-text {
+            background: #d32f2f;
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 900;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* Main Offer Box Container */
+        .main-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 20px 15px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Title */
+        .offer-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .gp-text { color: #0088cc; }
+        .bl-text { color: #ff6600; }
+        .black-text { color: #1a1a1a; }
+
+        /* Instruction Box */
+        .info-box {
+            background: #fff;
+            border: 1.5px dashed #ccc;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 13.5px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 18px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Timer Section */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .timer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer-val {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d32f2f;
+            line-height: 1;
+        }
+
+        .timer-dot {
+            font-size: 22px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-top: -10px;
+        }
+
+        .timer-lbl {
+            font-size: 9px;
+            font-weight: 600;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Section Headlines */
+        .section-heading {
+            color: #008000;
+            font-size: 22px;
+            font-weight: 800;
+            margin: 20px 0 14px 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Buttons Setup */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 15px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Button Gradient Colors */
+        .btn-bl { background: linear-gradient(135deg, #6a1b9a, #4a148c); }
+        .btn-gp { background: linear-gradient(135deg, #00b0ff, #0088cc); }
+        .btn-robi { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+        .btn-airtel { background: linear-gradient(135deg, #ff3d00, #dd2c00); }
+
+        /* Bottom Notice */
+        .bottom-notice {
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #555;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="width: 100%; max-width: 420px;">
+        
+        <!-- Top Big Banner Text -->
+        <div class="top-banner-text">
+            ফ্রি
+        </div>
+
+        <!-- Main Card Container -->
+        <div class="main-card">
+            
+            <!-- Title -->
+            <div class="offer-title">
+                <span class="gp-text">My GP</span> <span class="black-text">-</span> <span class="bl-text">BL</span> <span class="black-text">Offer</span>
+            </div>
+
+            <!-- Description Box -->
+            <div class="info-box">
+                অফার টি পেতে অবশ্যই আপনার মোবাইল নম্বর সাবমিট করে মোবাইলে যে পিন কোড যাবে সেটি নিচে OTP ভেরিফিকেশন করুন।
+            </div>
+
+            <!-- Timer -->
+            <div class="timer-container">
+                <div class="timer-item">
+                    <span class="timer-val" id="hr">00</span>
+                    <span class="timer-lbl">HOURS</span>
+                </div>
+                <span class="timer-dot">:</span>
+                <div class="timer-item">
+                    <span class="timer-val" id="min">01</span>
+                    <span class="timer-lbl">MINUTES</span>
+                </div>
+                <span class="timer-dot">:</span>
+                <div class="timer-item">
+                    <span class="timer-val" id="sec">47</span>
+                    <span class="timer-lbl">SECONDS</span>
+                </div>
+            </div>
+
+            <!-- Internet Section -->
+            <div class="section-heading">সকল ইন্টারনেট অফার</div>
+            <div class="btn-group">
+                <a href="#" class="btn btn-bl">বাংলালিংক ২৫ জিবি ফ্রি ইন্টারনেট</a>
+                <a href="#" class="btn btn-gp">গ্রামীণফোন ২৫ জিবি ফ্রি ইন্টারনেট</a>
+                <a href="#" class="btn btn-robi">রবি ২৫ জিবি ফ্রি ইন্টারনেট</a>
+                <a href="#" class="btn btn-airtel">এয়ারটেল ২৫ জিবি ফ্রি ইন্টারনেট</a>
+            </div>
+
+            <!-- Minute Section -->
+            <div class="section-heading">সকল মিনিট অফার</div>
+            <div class="btn-group">
+                <a href="#" class="btn btn-bl">বাংলালিংক ২০০ মিনিট ফ্রি</a>
+                <a href="#" class="btn btn-gp">গ্রামীণফোন ২০০ মিনিট ফ্রি</a>
+            </div>
+
+            <!-- Footer Warning / Notice -->
+            <div class="bottom-notice">
+                আপনার অফারটি সিলেক্ট করে, নিচে সাবমিট এ ক্লিক করে ফোন নম্বরের ওটিপি ভেরিফিকেশন করুন।
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Timer Script -->
+    <script>
+        let totalSeconds = 107; // ১ মিনিট ৪৭ সেকেন্ড
+
+        function updateTimer() {
+            let hours = Math.floor(totalSeconds / 3600);
+            let minutes = Math.floor((totalSeconds % 3600) / 60);
+            let seconds = totalSeconds % 60;
+
+            document.getElementById('hr').innerText = String(hours).padStart(2, '0');
+            document.getElementById('min').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('sec').innerText = String(seconds).padStart(2, '0');
+
+            if (totalSeconds > 0) {
+                totalSeconds--;
+            } else {
+                totalSeconds = 107; // রিসেট
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+    </script>
+
+</body>
+</html>
