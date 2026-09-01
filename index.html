@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral Link Telegram Mini App</title>
+  <title>Pom Pom Video App</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * {
@@ -17,7 +17,7 @@
     body {
       background-color: #f8fafc;
       color: #1e293b;
-      padding-bottom: 70px;
+      padding-bottom: 80px;
     }
 
     /* Top Bar */
@@ -45,13 +45,13 @@
     .balance-icon {
       width: 24px;
       height: 24px;
-      background: #4f46e5;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
     }
 
@@ -61,9 +61,10 @@
     }
 
     .balance-label {
-      font-size: 8px;
+      font-size: 9px;
       color: #64748b;
       font-weight: 700;
+      text-transform: uppercase;
     }
 
     .balance-amount {
@@ -76,20 +77,26 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      background: #f1f5f9;
+      padding: 4px 12px 4px 4px;
+      border-radius: 20px;
     }
 
     .user-avatar {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       object-fit: cover;
+      background: #cbd5e1;
     }
 
     .user-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
+      color: #0f172a;
     }
 
+    /* Main Container */
     .container {
       padding: 16px;
       max-width: 480px;
@@ -100,20 +107,20 @@
       font-size: 20px;
       font-weight: 800;
       color: #0f172a;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
 
     .section-title span {
-      color: #6366f1;
+      color: #a855f7;
     }
 
     .section-subtitle {
-      font-size: 12px;
+      font-size: 13px;
       color: #64748b;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
-    /* Cards */
+    /* Cards & Post List */
     .card {
       background: #ffffff;
       border-radius: 16px;
@@ -121,11 +128,44 @@
       margin-bottom: 14px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       border: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
+    }
+
+    .card.highlighted {
+      border: 2px solid #a855f7;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .share-btn {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #0f172a;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .share-btn:active {
+      background: #e2e8f0;
     }
 
     .action-btn {
       width: 100%;
-      background: #0f172a;
+      background: #0b1329;
       color: #fff;
       border: none;
       padding: 10px;
@@ -133,273 +173,289 @@
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
 
-    .action-btn.download-ready {
-      background: #22c55e;
+    .action-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
     }
 
-    .share-icon-btn {
-      background: #eff6ff;
-      color: #2563eb;
-      border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    /* Task Overlay Modal (Like Video) */
-    .task-modal {
+    /* Bottom Navigation */
+    .bottom-nav {
       position: fixed;
-      top: 0;
+      bottom: 0;
       left: 0;
       right: 0;
-      bottom: 0;
-      background: #6366f1;
-      z-index: 2000;
-      display: none;
+      background: #0b1329;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .nav-item {
+      display: flex;
       flex-direction: column;
-      overflow-y: auto;
-    }
-
-    .task-modal.active {
-      display: flex;
-    }
-
-    .modal-header {
-      padding: 16px;
-      display: flex;
       align-items: center;
-    }
-
-    .back-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: #fff;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      font-size: 18px;
+      color: #64748b;
+      font-size: 11px;
+      text-decoration: none;
       cursor: pointer;
     }
 
-    .task-hero {
-      text-align: center;
-      color: #fff;
-      padding: 10px 20px 20px;
+    .nav-item.active {
+      color: #a855f7;
     }
 
-    .task-hero img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid #fff;
-      object-fit: cover;
+    .nav-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Input & Forms */
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
       margin-bottom: 12px;
+      font-size: 14px;
+      outline: none;
     }
 
-    .task-progress-badge {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 6px 16px;
-      border-radius: 20px;
-      display: inline-block;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .task-body {
-      background: #f8fafc;
-      border-radius: 24px 24px 0 0;
-      flex: 1;
-      padding: 20px;
-    }
-
-    .task-item {
-      background: #fff;
-      border-radius: 12px;
-      padding: 14px;
+    .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      margin-bottom: 12px;
+      border-left: 4px solid #6366f1;
+      padding-left: 8px;
     }
 
-    .task-start-btn {
-      background: #0f172a;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .task-start-btn.completed {
-      background: #22c55e;
-    }
-
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.9);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 600;
-      display: none;
-      z-index: 3000;
+    .tag-badge {
+      background: #e0e7ff;
+      color: #4338ca;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
 
-  <div id="toast" class="toast">Link Copied! Share with friends.</div>
-
+  <!-- Top Bar -->
   <div class="top-bar">
     <div class="balance-badge">
       <div class="balance-icon">৳</div>
       <div class="balance-info">
         <span class="balance-label">MY BALANCE</span>
-        <span class="balance-amount">৳<span id="user-balance">400.00</span></span>
+        <span class="balance-amount">৳<span id="user-balance">0.00</span></span>
       </div>
     </div>
     <div class="user-profile">
-      <img id="user-avatar" class="user-avatar" src="https://via.placeholder.com/30" alt="User">
-      <span id="user-name" class="user-name">User</span>
+      <img id="user-avatar-img" class="user-avatar" src="https://via.placeholder.com/28" alt="User">
+      <span id="user-display-name" class="user-name">User</span>
     </div>
   </div>
 
   <div class="container">
-    <h2 class="section-title">New Viral <span>Link</span></h2>
-    <p class="section-subtitle">Watch ads to unlock premium content.</p>
-    <div id="posts-container"></div>
+    
+    <!-- 1. HOME TAB -->
+    <div id="home-tab" class="tab-content active">
+      <h2 class="section-title">New Viral <span>Link</span></h2>
+      <p class="section-subtitle">Watch ads to unlock premium content.</p>
+      
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px; color: #0f172a;">Trending Links</h3>
+      <div id="posts-container"></div>
+    </div>
+
+    <!-- 2. EARN & TASK TAB -->
+    <div id="earn-tab" class="tab-content">
+      <h2 class="section-title">Earn & <span>Tasks</span></h2>
+      <p class="section-subtitle">Complete daily tasks to earn extra money.</p>
+
+      <div class="section-head">
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">Video Tasks</h3>
+        <span class="tag-badge">Adsterra</span>
+      </div>
+
+      <div class="card" style="display: flex; gap: 12px; align-items: center;">
+        <div style="width: 44px; height: 44px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 20px; flex-shrink: 0;">▶</div>
+        <div style="flex: 1;">
+          <h3 style="font-size: 14px; font-weight: 800; color: #0f172a;">2 Step Video Ad</h3>
+          <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Earn <b>৳2.00</b> per full completion.</p>
+        </div>
+      </div>
+      <button class="action-btn" id="start-ad-btn" onclick="handleAdWatch()" style="margin-bottom: 25px; background: #22c55e;">
+        <span id="ad-btn-text">Start Watching</span>
+      </button>
+
+      <div class="section-head" style="margin-top: 25px; border-left-color: #a855f7;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">Mission Tasks</h3>
+        <span class="tag-badge" style="background: #f3e8ff; color: #a855f7;">High Paying</span>
+      </div>
+      <div class="card" style="text-align: center; color: #64748b; font-size: 13px; padding: 20px;">
+        No extra tasks available right now.
+      </div>
+    </div>
+
+    <!-- 3. REFER TAB -->
+    <div id="refer-tab" class="tab-content">
+      <h2 class="section-title">Invite <span>Friends</span></h2>
+      <p class="section-subtitle">Earn rewards by inviting your friends.</p>
+
+      <div class="card" style="padding: 16px;">
+        <p style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #0f172a;">Referral Reward:</p>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 12px;">Earn ৳20 for every friend who joins using your link.</p>
+        
+        <input type="text" class="input-field" value="https://t.me/Pompoma1_bot/myapp" readonly id="refLink">
+        <button class="action-btn" onclick="copyRefLink()" style="background: #00c853;">Copy Link</button>
+      </div>
+    </div>
+
+    <!-- 4. PROFILE TAB -->
+    <div id="profile-tab" class="tab-content">
+      <h2 class="section-title">Profile & <span>Withdraw</span></h2>
+      <p class="section-subtitle">Manage your earnings and withdraw funds.</p>
+
+      <div class="card" style="padding: 16px; margin-bottom: 20px;">
+        <p style="font-size: 13px; color: #64748b;">Current Balance</p>
+        <h3 style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 4px;">৳<span id="profile-balance">0.00</span></h3>
+      </div>
+
+      <div class="card" style="padding: 16px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px;">Withdraw Funds</h3>
+        
+        <select class="input-field">
+          <option>bKash</option>
+          <option>Nagad</option>
+          <option>Rocket</option>
+        </select>
+        
+        <input type="text" class="input-field" placeholder="Enter Wallet / Phone Number">
+        <input type="number" class="input-field" placeholder="Enter Amount (Min ৳100)">
+        
+        <button class="action-btn" onclick="alert('Withdrawal request submitted successfully!')">Withdraw</button>
+      </div>
+    </div>
+
   </div>
 
-  <div id="task-modal" class="task-modal">
-    <div class="modal-header">
-      <button class="back-btn" onclick="closeTaskModal()">←</button>
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('home-tab', this)">
+      <div class="nav-icon">🏠</div>
+      <span>Home</span>
     </div>
-    <div class="task-hero">
-      <img id="modal-post-img" src="" alt="Post Thumb">
-      <div>
-        <span class="task-progress-badge"><span id="completed-count">0</span>/5</span>
-      </div>
-      <h3 id="modal-post-title" style="font-size: 15px; margin-top: 4px;">Post Title</h3>
-      <p style="font-size: 11px; opacity: 0.9; margin-top: 4px;">Complete 5 tasks to unlock</p>
+    <div class="nav-item" onclick="switchTab('earn-tab', this)">
+      <div class="nav-icon">💰</div>
+      <span>Earn & Task</span>
     </div>
-
-    <div class="task-body">
-      <div id="task-list-container"></div>
-      <button id="final-link-btn" class="action-btn download-ready" style="display:none; margin-top: 15px;" onclick="openMainContent()">
-        Get Video Link 🎬
-      </button>
+    <div class="nav-item" onclick="switchTab('refer-tab', this)">
+      <div class="nav-icon">👥</div>
+      <span>Refer</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('profile-tab', this)">
+      <div class="nav-icon">👤</div>
+      <span>Profile</span>
     </div>
   </div>
 
   <script>
     const adsterraLink = "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093";
-    
-    const botUsername = "Pompoma1_bot"; 
-    const appShortName = "myapp"; 
+    const botUsername = "Pompoma1_bot";
+    const appShortName = "myapp";
 
+    // Posts Data
     const postsData = [
-      {
-        id: 256,
-        title: "‼️ নতুন টিকটকার এর ভাইরাল ভিডিও লিংক পুরাই আগুন ৪ মিনিট এর ভিডিও 🍑",
+       {
+        id: 1,
+        title: "‼️নতুন টিকটকার এর ভাইরাল ভিডিও লিংক পুরাই আগুন ৪ মিনিট এর ভিডিও 🍑",
         image: "https://i.ibb.co/8gmWhXtC/image.jpg",
         contentLink: "https://qu.ax/O1Hgw"
       },
-      {
-        id: 257,
-        title: "‼️ ২ বন্ধু মিলে মাগীকে চুদে দিলো দেখলে মাল আউট",
+       {
+        id: 2,
+        title: "‼️২ বন্ধু মিলে মাগীকে চুদে দিলো দেখলে মাল আউট",
         image: "https://i.ibb.co/G3dsfdb3/image.jpg",
         contentLink: "https://qu.ax/04V04"
       },
       {
-        id: 258,
+        id: 3,
         title: "Gf কে বাসায় নিয়ে খেলে দিল 🥵",
         image: "https://i.ibb.co/cf45zwW/image.jpg",
         contentLink: "https://qu.ax/7GJVO"
       },
       {
-        id: 259,
+        id: 4,
         title: "Bf কে দু*ধু খাওয়ালো Gf 🥵 পুরো লিংক টা আগুন ছিল 🔥",
         image: "https://i.ibb.co/1twRvJNM/image.jpg",
         contentLink: "https://qu.ax/nIGbV"
       },
       {
-        id: 260,
+        id: 5,
         title: "পিচ্চি মেয়ের ১২ মিনিট ভাইরাল লিংক।🥵",
         image: "https://i.ibb.co/b5pWhFbt/image.jpg",
         contentLink: "https://qu.ax/0n5wG"
       },
       {
-        id: 261,
+        id: 6,
         title: "Doggy style খেয়ে দিল Boyfriend 🥵🔥",
         image: "https://i.ibb.co/kVNbJStk/image.jpg",
         contentLink: "https://qu.ax/PerPh"
       },
       {
-        id: 262,
+        id: 7,
         title: "বৌদির গুদে মা*ল ঢেলে দিল দেবর 🥵🎀",
         image: "https://i.ibb.co/qXXQGvP/image.jpg",
         contentLink: "https://qu.ax/mSTKm"
       },
       {
-        id: 263,
+        id: 8,
         title: "📌নতুন মাগী শষা পুরোটাই ঢুকিয়ে দিল। 🥵",
         image: "https://i.ibb.co/FjCmf4B/image.jpg",
         contentLink: "https://qu.ax/a92wD"
       }
     ];
 
-    let userTaskProgress = {}; 
-    let activePostId = null;
+    let userProgress = {};
+    let activeTimers = {};
+    let currentAdStep = 1;
+    let isAdTimerRunning = false;
 
-    function openExternalUrl(url) {
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        window.Telegram.WebApp.openLink(url);
-      } else {
-        window.open(url, '_blank');
-      }
-    }
-
-    function renderHomePosts() {
+    // Render Home Posts
+    function renderPosts() {
       const container = document.getElementById('posts-container');
+      if (!container) return;
+
       container.innerHTML = postsData.map(post => {
-        const completedTasks = userTaskProgress[post.id] ? Object.keys(userTaskProgress[post.id]).length : 0;
-        const isReady = completedTasks >= 5;
-        const btnText = isReady ? "Download 📥" : `Tasks (${completedTasks}/5)`;
-        const btnClass = isReady ? "action-btn download-ready" : "action-btn";
+        const step = userProgress[post.id] || 0;
+        let btnText = `Unlock Content ( ${step} / 2 )`;
+        if (step >= 2) {
+          btnText = "Get Final Link 🎬";
+        }
 
         return `
           <div class="card" id="post-card-${post.id}">
             <div style="display: flex; gap: 12px; align-items: flex-start;">
-              <img src="${post.image}" style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; flex-shrink: 0;">
+              <img src="${post.image}" style="width: 85px; height: 85px; border-radius: 12px; object-fit: cover; flex-shrink: 0;">
               <div style="flex: 1;">
-                <h4 style="font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.3; margin-bottom: 8px;">
-                  ${post.title}
-                </h4>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                  <button class="${btnClass}" onclick="openTaskModal(${post.id})">
-                    📋 ${btnText}
-                  </button>
-                  <button class="share-icon-btn" onclick="shareSpecificPost(${post.id}, '${post.title.replace(/'/g, "\\'")}')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <div class="post-header">
+                  <h4 style="font-size: 13.5px; font-weight: 700; color: #0f172a; line-height: 1.3;">
+                    ${post.title}
+                  </h4>
+                  <button class="share-btn" onclick="sharePost(${post.id}, '${post.title.replace(/'/g, "\\'")}')" title="Share Direct App Link">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="18" cy="5" r="3"></circle>
                       <circle cx="6" cy="12" r="3"></circle>
                       <circle cx="18" cy="19" r="3"></circle>
@@ -408,6 +464,9 @@
                     </svg>
                   </button>
                 </div>
+                <button class="action-btn" id="unlock-btn-${post.id}" onclick="handleUnlock(${post.id})" style="margin-top: 4px;">
+                  ${btnText}
+                </button>
               </div>
             </div>
           </div>
@@ -415,17 +474,12 @@
       }).join('');
     }
 
-    function shareSpecificPost(postId, title) {
-      const shareUrl = `https://t.me/${botUsername}/${appShortName}?startapp=file_${postId}`;
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareUrl);
-        showToast("Link Copied! Share with friends.");
-      }
-
-      const shareText = `📌 ${title}\n\n🚀 ভিডিও লিংক দেখতে এখানে ক্লিক করুন:`;
+    // Direct Mini App Share Function
+    function sharePost(postId, title) {
+      const shareUrl = `https://t.me/${botUsername}/${appShortName}?startapp=post_${postId}`;
+      const shareText = `${title}\n\n🎬 সরাসরি ভিডিও দেখতে নিচে চাপ দিন:`;
       const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
-      
+
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
         window.Telegram.WebApp.openTelegramLink(tgShareUrl);
       } else {
@@ -433,87 +487,112 @@
       }
     }
 
-    // নির্দিষ্ট ID অনুযায়ী সঠিকভাবে মোডাল খোলা
-    function openTaskModal(postId) {
-      const targetId = parseInt(postId);
-      const post = postsData.find(p => p.id === targetId);
+    // Handle Content Unlock with 20s Wait Timer
+    function handleUnlock(postId) {
+      if (activeTimers[postId]) return;
+
+      const post = postsData.find(p => p.id === postId);
       if (!post) return;
 
-      activePostId = targetId; // activePostId আপডেট করা হলো
-      document.getElementById('modal-post-img').src = post.image;
-      document.getElementById('modal-post-title').innerText = post.title;
+      let currentStep = userProgress[postId] || 0;
 
-      renderTasks();
-      document.getElementById('task-modal').classList.add('active');
-    }
-
-    function closeTaskModal() {
-      document.getElementById('task-modal').classList.remove('active');
-      renderHomePosts();
-    }
-
-    function renderTasks() {
-      if (!activePostId) return;
-
-      if (!userTaskProgress[activePostId]) {
-        userTaskProgress[activePostId] = {};
-      }
-
-      const completedCount = Object.keys(userTaskProgress[activePostId]).length;
-      document.getElementById('completed-count').innerText = completedCount;
-
-      const taskContainer = document.getElementById('task-list-container');
-      let tasksHtml = '';
-
-      for (let i = 1; i <= 5; i++) {
-        const isDone = userTaskProgress[activePostId][i];
-        tasksHtml += `
-          <div class="task-item">
-            <div>
-              <p style="font-size: 13px; font-weight: 700;">Partner Task ${i}</p>
-              <p style="font-size: 11px; color: #64748b;">Complete task to progress</p>
-            </div>
-            <button class="task-start-btn ${isDone ? 'completed' : ''}" onclick="doTask(${i})">
-              ${isDone ? '✓ Done' : 'Start Task'}
-            </button>
-          </div>
-        `;
-      }
-
-      taskContainer.innerHTML = tasksHtml;
-
-      const finalBtn = document.getElementById('final-link-btn');
-      if (completedCount >= 5) {
-        finalBtn.style.display = 'block';
+      if (currentStep === 0) {
+        window.open(adsterraLink, '_blank');
+        startUnlockTimer(postId, 1);
+      } else if (currentStep === 1) {
+        window.open(adsterraLink, '_blank');
+        startUnlockTimer(postId, 2);
       } else {
-        finalBtn.style.display = 'none';
+        window.open(post.contentLink, '_blank');
       }
     }
 
-    function doTask(taskNumber) {
-      openExternalUrl(adsterraLink);
-      userTaskProgress[activePostId][taskNumber] = true;
-      renderTasks();
+    // Timer Function for Unlock Steps
+    function startUnlockTimer(postId, nextStep) {
+      const btn = document.getElementById(`unlock-btn-${postId}`);
+      if (!btn) return;
+
+      activeTimers[postId] = true;
+      btn.disabled = true;
+      btn.style.background = "#94a3b8";
+      let timeLeft = 20;
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        btn.innerText = `Please wait ${timeLeft}s...`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          delete activeTimers[postId];
+          userProgress[postId] = nextStep;
+          renderPosts();
+        }
+      }, 1000);
     }
 
-    function openMainContent() {
-      const post = postsData.find(p => p.id === activePostId);
-      if (post) {
-        openExternalUrl(post.contentLink);
-      }
+    // Task Tab Ad Watching
+    function handleAdWatch() {
+      if (isAdTimerRunning) return;
+
+      const btn = document.getElementById('start-ad-btn');
+      const btnText = document.getElementById('ad-btn-text');
+
+      window.open(adsterraLink, '_blank');
+      isAdTimerRunning = true;
+
+      let timeLeft = 30;
+      btn.style.background = "#94a3b8";
+
+      const timer = setInterval(() => {
+        timeLeft--;
+        btnText.innerText = `Please wait ${timeLeft}s...`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          isAdTimerRunning = false;
+
+          if (currentAdStep === 1) {
+            currentAdStep = 2;
+            btnText.innerText = "Watch Step 2";
+            btn.style.background = "#3b82f6";
+          } else {
+            currentAdStep = 1;
+            btnText.innerText = "Task Completed! (+৳2.00)";
+            btn.style.background = "#22c55e";
+
+            let currentBal = parseFloat(document.getElementById('user-balance').innerText);
+            let newBal = (currentBal + 2.00).toFixed(2);
+            document.getElementById('user-balance').innerText = newBal;
+            document.getElementById('profile-balance').innerText = newBal;
+
+            setTimeout(() => {
+              btnText.innerText = "Start Watching";
+            }, 3000);
+          }
+        }
+      }, 1000);
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    // Copy Referral Link
+    function copyRefLink() {
+      const copyText = document.getElementById("refLink");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+      alert("Referral link copied to clipboard!");
     }
 
-    // Telegram Deep Link URL Parsing (১০০% নির্ভুলভাবে নির্দিষ্ট পোস্ট ডিটেক্ট করার জন্য)
+    // Switch Tabs
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      element.classList.add('active');
+    }
+
+    // Telegram Init
     function initTelegramApp() {
-      renderHomePosts();
-
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -521,33 +600,31 @@
 
         const user = tg.initDataUnsafe?.user;
         if (user) {
-          document.getElementById('user-name').innerText = user.first_name || "User";
-          if (user.photo_url) document.getElementById('user-avatar').src = user.photo_url;
-        }
-
-        // URL / InitData থেকে startapp প্যারামিটার পড়া
-        const urlParams = new URLSearchParams(window.location.search);
-        let startParam = tg.initDataUnsafe?.start_param || urlParams.get('startapp') || urlParams.get('tgWebAppStartParam');
-
-        if (!startParam && window.location.hash) {
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          startParam = hashParams.get('tgWebAppStartParam');
-        }
-
-        if (startParam && startParam.includes("file_")) {
-          const extractedId = startParam.replace("file_", "");
-          const targetPostId = parseInt(extractedId);
-
-          if (!isNaN(targetPostId)) {
-            setTimeout(() => {
-              openTaskModal(targetPostId);
-            }, 300);
+          document.getElementById('user-display-name').innerText = user.first_name || "User";
+          if (user.photo_url) {
+            document.getElementById('user-avatar-img').src = user.photo_url;
           }
+
+          const refLink = `https://t.me/${botUsername}/${appShortName}?startapp=ref_${user.id}`;
+          document.getElementById('refLink').value = refLink;
+        }
+
+        // Direct Target Auto Scroll
+        const startParam = tg.initDataUnsafe?.start_param;
+        if (startParam && startParam.startsWith("post_")) {
+          const targetPostId = parseInt(startParam.split("_")[1]);
+          setTimeout(() => {
+            const el = document.getElementById(`post-card-${targetPostId}`);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('highlighted');
+            }
+          }, 300);
         }
       }
     }
 
-    // Start App
+    renderPosts();
     initTelegramApp();
   </script>
 </body>
