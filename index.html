@@ -125,7 +125,7 @@
 
     .action-btn {
       width: 100%;
-      background: #22c55e;
+      background: #0f172a;
       color: #fff;
       border: none;
       padding: 10px;
@@ -137,6 +137,10 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+    }
+
+    .action-btn.download-ready {
+      background: #22c55e;
     }
 
     .share-icon-btn {
@@ -153,7 +157,7 @@
       flex-shrink: 0;
     }
 
-    /* Task Overlay Modal */
+    /* Task Overlay Modal (Video Layout) */
     .task-modal {
       position: fixed;
       top: 0;
@@ -245,7 +249,6 @@
       background: #22c55e;
     }
 
-    /* Toast Notification */
     .toast {
       position: fixed;
       top: 20px;
@@ -264,8 +267,10 @@
 </head>
 <body>
 
+  <!-- Toast Notification -->
   <div id="toast" class="toast">Link Copied! Share with friends.</div>
 
+  <!-- Top Header -->
   <div class="top-bar">
     <div class="balance-badge">
       <div class="balance-icon">৳</div>
@@ -280,13 +285,14 @@
     </div>
   </div>
 
+  <!-- Main Feed Container -->
   <div class="container">
     <h2 class="section-title">New Viral <span>Link</span></h2>
     <p class="section-subtitle">Watch ads to unlock premium content.</p>
-
     <div id="posts-container"></div>
   </div>
 
+  <!-- Task Detail Page (Modal Overlay) -->
   <div id="task-modal" class="task-modal">
     <div class="modal-header">
       <button class="back-btn" onclick="closeTaskModal()">←</button>
@@ -302,7 +308,7 @@
 
     <div class="task-body">
       <div id="task-list-container"></div>
-      <button id="final-link-btn" class="action-btn" style="display:none; margin-top: 15px; background: #6366f1;" onclick="openMainContent()">
+      <button id="final-link-btn" class="action-btn download-ready" style="display:none; margin-top: 15px;" onclick="openMainContent()">
         Get Video Link 🎬
       </button>
     </div>
@@ -310,36 +316,66 @@
 
   <script>
     const adsterraLink = "https://tonicgoverness.com/jdj611b6k?key=b771257f4fb0085c78445fc78a54a093";
-    const botUsername = "virall_link_bot"; 
-    const appShortName = "app"; 
+    
+    // আপনার বটের জন্য আপডেটকৃত ইউজারনেম ও অ্যাপ শর্ট নেম
+    const botUsername = "Pompoma1_bot"; 
+    const appShortName = "myapp"; 
 
-    // Posts Dataset (Aapnar image/video thematic post structure)
+    // আপনার ৮টি পোস্টের ডাটা
     const postsData = [
       {
-        id: 257,
+        id: 256,
         title: "‼️ নতুন টিকটকার এর ভাইরাল ভিডিও লিংক পুরাই আগুন ৪ মিনিট এর ভিডিও 🍑",
         image: "https://i.ibb.co/8gmWhXtC/image.jpg",
         contentLink: "https://qu.ax/O1Hgw"
       },
       {
+        id: 257,
+        title: "‼️ ২ বন্ধু মিলে মাগীকে চুদে দিলো দেখলে মাল আউট",
+        image: "https://i.ibb.co/G3dsfdb3/image.jpg",
+        contentLink: "https://qu.ax/04V04"
+      },
+      {
         id: 258,
-        title: "নালিকা Alia Bhatt এর ভাইরাল ভিডিও 🥵",
+        title: "Gf কে বাসায় নিয়ে খেলে দিল 🥵",
         image: "https://i.ibb.co/cf45zwW/image.jpg",
         contentLink: "https://qu.ax/7GJVO"
       },
       {
         id: 259,
-        title: "চোখ বেঁধে GF কে খেলে দিল 🥵",
+        title: "Bf কে দু*ধু খাওয়ালো Gf 🥵 পুরো লিংক টা আগুন ছিল 🔥",
+        image: "https://i.ibb.co/1twRvJNM/image.jpg",
+        contentLink: "https://qu.ax/nIGbV"
+      },
+      {
+        id: 260,
+        title: "পিচ্চি মেয়ের ১২ মিনিট ভাইরাল লিংক।🥵",
+        image: "https://i.ibb.co/b5pWhFbt/image.jpg",
+        contentLink: "https://qu.ax/0n5wG"
+      },
+      {
+        id: 261,
+        title: "Doggy style খেয়ে দিল Boyfriend 🥵🔥",
         image: "https://i.ibb.co/kVNbJStk/image.jpg",
         contentLink: "https://qu.ax/PerPh"
+      },
+      {
+        id: 262,
+        title: "বৌদির গুদে মা*ল ঢেলে দিল দেবর 🥵🎀",
+        image: "https://i.ibb.co/qXXQGvP/image.jpg",
+        contentLink: "https://qu.ax/mSTKm"
+      },
+      {
+        id: 263,
+        title: "📌নতুন মাগী শষা পুরোটাই ঢুকিয়ে দিল। 🥵",
+        image: "https://i.ibb.co/FjCmf4B/image.jpg",
+        contentLink: "https://qu.ax/a92wD"
       }
     ];
 
-    // User Task Progress Tracker (Post wise)
     let userTaskProgress = {}; 
     let activePostId = null;
 
-    // Telegram Open helper
     function openExternalUrl(url) {
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
         window.Telegram.WebApp.openLink(url);
@@ -348,12 +384,13 @@
       }
     }
 
-    // Render Home Feed
     function renderHomePosts() {
       const container = document.getElementById('posts-container');
       container.innerHTML = postsData.map(post => {
         const completedTasks = userTaskProgress[post.id] ? Object.keys(userTaskProgress[post.id]).length : 0;
-        const btnText = completedTasks >= 5 ? "Download 📥" : `Tasks (${completedTasks}/5)`;
+        const isReady = completedTasks >= 5;
+        const btnText = isReady ? "Download 📥" : `Tasks (${completedTasks}/5)`;
+        const btnClass = isReady ? "action-btn download-ready" : "action-btn";
 
         return `
           <div class="card" id="post-card-${post.id}">
@@ -364,10 +401,10 @@
                   ${post.title}
                 </h4>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                  <button class="action-btn" onclick="openTaskModal(${post.id})">
+                  <button class="${btnClass}" onclick="openTaskModal(${post.id})">
                     📋 ${btnText}
                   </button>
-                  <button class="share-icon-btn" onclick="shareSpecificPost(${post.id})">
+                  <button class="share-icon-btn" onclick="shareSpecificPost(${post.id}, '${post.title.replace(/'/g, "\\'")}')">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <circle cx="18" cy="5" r="3"></circle>
                       <circle cx="6" cy="12" r="3"></circle>
@@ -384,8 +421,8 @@
       }).join('');
     }
 
-    // Direct Share Option for specific post
-    function shareSpecificPost(postId) {
+    // আপনার বটের কাস্টম লিংক শেয়ার ফংশন
+    function shareSpecificPost(postId, title) {
       const shareUrl = `https://t.me/${botUsername}/${appShortName}?startapp=file_${postId}`;
       
       if (navigator.clipboard) {
@@ -393,7 +430,8 @@
         showToast("Link Copied! Share with friends.");
       }
 
-      const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent("🚀 ভাইরাল ভিডিও লিংকটি দেখতে এখানে চাপুন:")}`;
+      const shareText = `📌 ${title}\n\n🚀 ভিডিও লিংক দেখতে এখানে ক্লিক করুন:`;
+      const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
       
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
         window.Telegram.WebApp.openTelegramLink(tgShareUrl);
@@ -402,7 +440,6 @@
       }
     }
 
-    // Open Task Modal
     function openTaskModal(postId) {
       const post = postsData.find(p => p.id === postId);
       if (!post) return;
@@ -415,13 +452,11 @@
       document.getElementById('task-modal').classList.add('active');
     }
 
-    // Close Task Modal
     function closeTaskModal() {
       document.getElementById('task-modal').classList.remove('active');
       renderHomePosts();
     }
 
-    // Render 5 Partner Tasks
     function renderTasks() {
       if (!userTaskProgress[activePostId]) {
         userTaskProgress[activePostId] = {};
@@ -458,14 +493,12 @@
       }
     }
 
-    // Handle Individual Task Action
     function doTask(taskNumber) {
       openExternalUrl(adsterraLink);
       userTaskProgress[activePostId][taskNumber] = true;
       renderTasks();
     }
 
-    // Final Link Open Action
     function openMainContent() {
       const post = postsData.find(p => p.id === activePostId);
       if (post) {
@@ -480,7 +513,7 @@
       setTimeout(() => { toast.style.display = 'none'; }, 2500);
     }
 
-    // Deep Linking: Redirect to direct post modal upon launching from startapp parameter
+    // Direct Deep Linking Auto-Opening (শেয়ার লিংকে ক্লিক করলে কাজ করবে)
     function initTelegramApp() {
       if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
@@ -493,9 +526,8 @@
           if (user.photo_url) document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // Direct Deep Link parameter checking
         const urlParams = new URLSearchParams(window.location.search);
-        const startParam = tg.initDataUnsafe?.start_param || urlParams.get('startapp');
+        const startParam = tg.initDataUnsafe?.start_param || urlParams.get('startapp') || urlParams.get('tgWebAppStartParam');
 
         if (startParam && startParam.startsWith("file_")) {
           const targetPostId = parseInt(startParam.split("_")[1]);
